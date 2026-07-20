@@ -1,0 +1,74 @@
+{
+  "_说明": "标注数据格式 — 每个test_case包含PDF文件名和人工标注的运单信息（Ground Truth）",
+  "_用法": "1. 同一PDF放多个运单 → ground_truth数组填多条 2. 提取不出的字段留空字符串 3. 运行 python scripts/evaluate.py",
+  "test_cases": [
+    {
+      "pdf_file": "sample_pdfs/test_waybill_01.pdf",
+      "ground_truth": [
+        {
+          "tracking_number": "SF1234567890123",
+          "order_number": "ORD20240701001",
+          "sender": {
+            "name": "张三",
+            "phone": "13800138000",
+            "address": "朝阳区建国路88号",
+            "province": "北京",
+            "city": "北京市",
+            "district": "朝阳区"
+          },
+          "recipient": {
+            "name": "李四",
+            "phone": "13900139000",
+            "address": "天河区珠江新城花城大道66号",
+            "province": "广东",
+            "city": "广州市",
+            "district": "天河区"
+          },
+          "shipping_date": "2024-07-01",
+          "weight": "2.5kg",
+          "quantity": "1",
+          "shipping_method": "标准快递",
+          "carrier": "顺丰速运",
+          "declared_value": "500",
+          "payment_method": "寄付",
+          "delivery_date": "2024-07-03",
+          "remarks": ""
+        }
+      ]
+    },
+    {
+      "pdf_file": "sample_pdfs/test_waybill_02.pdf",
+      "ground_truth": [
+        {
+          "tracking_number": "",
+          "order_number": "",
+          "sender": {
+            "name": "",
+            "phone": "",
+            "address": "",
+            "province": "",
+            "city": "",
+            "district": ""
+          },
+          "recipient": {
+            "name": "",
+            "phone": "",
+            "address": "",
+            "province": "",
+            "city": "",
+            "district": ""
+          },
+          "shipping_date": "",
+          "weight": "",
+          "quantity": "",
+          "shipping_method": "",
+          "carrier": "",
+          "declared_value": "",
+          "payment_method": "",
+          "delivery_date": "",
+          "remarks": ""
+        }
+      ]
+    }
+  ]
+}

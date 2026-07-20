@@ -1,0 +1,17 @@
+.env
+__pycache__/
+*.pyc
+.venv/
+venv/
+data/uploads/*
+data/*.db
+data/labels.json
+data/processed_files.json
+data/report_regex.json
+data/test_watch/*
+output/*
+.streamlit/secrets.toml
+*.egg-info/
+dist/
+build/
+*.spec
