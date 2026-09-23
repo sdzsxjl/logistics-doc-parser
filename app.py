@@ -19,6 +19,15 @@ from src.models import ShippingOrder, ParseResult
 from src.excel_exporter import ExcelExporter, orders_to_dataframe
 from src.customer_manager import get_customer_manager, init_db
 
+# ─── 页面配置 ───────────────────────────────────────────
+# 必须是脚本中第一个 Streamlit 命令（Streamlit 1.35+ 严格要求）
+st.set_page_config(
+    page_title="物流单据智能解析系统",
+    page_icon="📦",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
+
 # ─── Streamlit Cloud 适配：secrets → 环境变量 ──────────
 # 本地用 .streamlit/secrets.toml，云端在 Dashboard 配置
 # 注入为环境变量后，所有 os.getenv() 调用透明兼容
@@ -29,14 +38,6 @@ for _key in ["DEEPSEEK_API_KEY", "DEEPSEEK_BASE_URL", "MODEL_NAME",
             os.environ[_key] = st.secrets[_key]
     except Exception:
         pass  # secrets 不可用时忽略（非 Streamlit 环境）
-
-# ─── 页面配置 ───────────────────────────────────────────
-st.set_page_config(
-    page_title="物流单据智能解析系统",
-    page_icon="📦",
-    layout="wide",
-    initial_sidebar_state="expanded",
-)
 
 st.markdown("""
 <style>
@@ -351,8 +352,11 @@ if page == "🔧 系统管理":
                             cm.toggle_active(customer["id"])
                             st.rerun()
 
-                        # 编辑 API Key
-                        with st.expander("✏️ 修改API Key"):
+                        # 编辑操作（tabs 可嵌套在 expander 内，popover/expander 会被拦截）
+                        tab_key, tab_quota, tab_del = st.tabs(
+                            ["🔑 Key", "📊 配额", "🗑️ 删除"]
+                        )
+                        with tab_key:
                             edit_key = st.text_input(
                                 "新API Key", type="password",
                                 placeholder="sk-...",
@@ -363,8 +367,7 @@ if page == "🔧 系统管理":
                                 st.success("已更新")
                                 st.rerun()
 
-                        # 编辑配额
-                        with st.expander("✏️ 修改配额"):
+                        with tab_quota:
                             edit_quota = st.number_input(
                                 "月配额", value=customer["monthly_quota"],
                                 min_value=100, step=500,
@@ -375,14 +378,15 @@ if page == "🔧 系统管理":
                                 st.success("已更新")
                                 st.rerun()
 
-                        # 删除
-                        if customer["name"] != "admin":
-                            with st.expander("🗑️ 删除", expanded=False):
+                        with tab_del:
+                            if customer["name"] != "admin":
                                 st.warning("⚠️ 删除后不可恢复")
                                 if st.button("确认删除", key=f"del_{customer_key}",
                                              use_container_width=True, type="secondary"):
                                     cm.delete(customer["id"])
                                     st.rerun()
+                            else:
+                                st.caption("内置管理员账号不可删除")
 
     st.stop()  # 管理页面不显示下面的解析UI
 

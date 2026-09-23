@@ -264,7 +264,7 @@ class CustomerManager:
             "total_input_tokens": total["total_input"] or 0,
             "total_output_tokens": total["total_output"] or 0,
             "total_cost": round(total["total_cost"] or 0, 4),
-            "success_rate": f"{total['success_count']/max(total['total_requests'],1)*100:.1f}%",
+            "success_rate": f"{(total['success_count'] or 0)/max(total['total_requests'] or 0, 1)*100:.1f}%",
             "monthly_quota": quota,
             "monthly_used": monthly_orders,
             "quota_pct": f"{monthly_orders/max(quota,1)*100:.1f}%",
