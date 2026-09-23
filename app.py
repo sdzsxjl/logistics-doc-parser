@@ -31,13 +31,16 @@ st.set_page_config(
 # ─── Streamlit Cloud 适配：secrets → 环境变量 ──────────
 # 本地用 .streamlit/secrets.toml，云端在 Dashboard 配置
 # 注入为环境变量后，所有 os.getenv() 调用透明兼容
-for _key in ["DEEPSEEK_API_KEY", "DEEPSEEK_BASE_URL", "MODEL_NAME",
-             "WATCH_DIR", "AUTO_EXCEL"]:
-    try:
-        if _key in st.secrets and _key not in os.environ:
-            os.environ[_key] = st.secrets[_key]
-    except Exception:
-        pass  # secrets 不可用时忽略（非 Streamlit 环境）
+# 注意：直接访问 st.secrets 在无 secrets.toml 时会触发 st.error("No secrets files found")
+# 因此先用 load_if_toml_exists() 静默检测，本地仅用 .env 时不会报错
+if st.secrets.load_if_toml_exists():
+    for _key in ["DEEPSEEK_API_KEY", "DEEPSEEK_BASE_URL", "MODEL_NAME",
+                 "WATCH_DIR", "AUTO_EXCEL"]:
+        try:
+            if _key in st.secrets and _key not in os.environ:
+                os.environ[_key] = st.secrets[_key]
+        except Exception:
+            pass  # 单个 key 缺失不影响整体
 
 st.markdown("""
 <style>
